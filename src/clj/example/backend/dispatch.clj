@@ -6,12 +6,14 @@
 
 (def actions
   {:pizza/list {:type :query
+                :roles #{:visitor :manager :admin}
                 :summary "list pizzas"
                 :output [:vector pizza/Pizza]
                 :handler (fn [{:keys [db]} _]
                            (pizza-db/get-pizzas db))}
    :pizza/get {:type :query
                :summary "get a pizza"
+               :roles #{:visitor :manager :admin}
                :input [:map [:id int?]]
                :output [:maybe pizza/Pizza]
                :handler (fn [{:keys [db]} {:keys [id]}]
@@ -19,12 +21,14 @@
 
    :pizza/add {:type :command
                :summary "add a pizza"
+               :roles #{:manager :admin}
                :input pizza/NewPizza
                :output pizza/Pizza
                :handler (fn [{:keys [db]} pizza]
                           (pizza-db/insert-pizza! db pizza))}
 
    :pizza/clear {:type :command
+                 :roles #{:admin}
                  :summary "remove pizzas"
                  :handler (fn [{:keys [db]} _]
                             (pizza-db/remove-pizzas! db))}})

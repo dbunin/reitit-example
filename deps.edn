@@ -8,8 +8,8 @@
                                lambdaisland/kaocha-cljs {:mvn/version "0.0-71"}
                                clj-http {:mvn/version "3.10.1"}}}
            :common {:extra-paths ["src/cljc"]
-                    :extra-deps {metosin/reitit {:mvn/version "0.4.2"}
-                                 metosin/malli {:mvn/version "0.0.1-20200404.091302-14"}
+                    :extra-deps {metosin/reitit {:mvn/version "0.5.15"}
+                                 metosin/malli {:mvn/version "0.8.0"}
                                  integrant/repl {:mvn/version "0.3.1"}}}
            :frontend {:extra-paths ["src/cljs"]
                       :extra-deps {org.clojure/clojurescript {:mvn/version "1.10.597"}

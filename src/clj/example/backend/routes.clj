@@ -18,7 +18,7 @@
    ["/api-docs/*"
     {:get {:no-doc true
            :handler (swagger-ui/create-swagger-ui-handler
-                      {:config {:validatorUrl nil}})}}]
+                     {:config {:validatorUrl nil}})}}]
 
    ["/api"
     ["/health" {:swagger {:tags ["health"]}}
@@ -41,6 +41,17 @@
                  :handler (fn [request]
                             (let [{:keys [action data]} (-> request :parameters :body)]
                               (r/ok (d/dispatch env [action data]))))}}]
+     ["/list/:role" {:get {:summary "List all actions"
+                           :parameters {:path [:map [:role keyword?]]}
+                           :responses {200 {:body any?}}
+                           :handler (fn [request]
+                                      (let [role (-> request :parameters :path :role)]
+                                        (r/ok (keep (fn [[action {:keys [type roles summary input]}]]
+                                                      (when (contains? roles role)
+                                                        {:action action
+                                                         :type type
+                                                         :summary summary}))
+                                                    d/actions))))}}]
      ["/actions"
       (for [[action {:keys [type summary input output]}] d/actions]
         (let [[method parameter] (if (= :query type) [:get :query] [:post :body])]
@@ -49,5 +60,5 @@
                             :handler (fn [request]
                                        (let [data (-> request :parameters parameter)]
                                          (r/ok (d/dispatch env [action data]))))}
-                           input (assoc :parameters {parameter input})
-                           output (assoc :responses {200 {:body output}}))}]))]]]])
+                     input (assoc :parameters {parameter input})
+                     output (assoc :responses {200 {:body output}}))}]))]]]])
